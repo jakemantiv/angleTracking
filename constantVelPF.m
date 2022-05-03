@@ -53,14 +53,14 @@ constantVelPFoutputStruct.w = w;
 function [xsamps_k,w] = SIRPF(xsamps_prev,zk, inputStruct, I_in)
 F = inputStruct.F;
 % G = inputStruct.G;
-% U = inputStruct.U;
+U = inputStruct.U;
 Q = inputStruct.Q;
 Gamma = inputStruct.Gamma;
 Sw = chol(Q, 'lower'); 
 
 w = zeros(1,size(xsamps_prev,2));
 w_draw = Sw*randn(2,numel(w));
-xsamps_k = F*xsamps_prev + Gamma*w_draw;
+xsamps_k = F*xsamps_prev + Gamma*w_draw - U(:,I_in);
 
 w = get_pygivenx(zk, xsamps_k, inputStruct);
 w = w./sum(w);

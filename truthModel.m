@@ -8,12 +8,15 @@ xTrue0 = truthModelInputStruct.xTrue0;
 xTgt0 = truthModelInputStruct.xTgt0;
 xObs0 = truthModelInputStruct.xObs0;
 timeVec = truthModelInputStruct.timeVec;
-
+legTime = truthModelInputStruct.obsLegTime;
+legHeading = truthModelInputStruct.obsLegHeading;
+legVel = truthModelInputStruct.obsLegVel;
 dt = timeVec(2) - timeVec(1);
 
 xTrue = zeros(4,numel(timeVec));
 xObsTrue = zeros(4,numel(timeVec));
 xTgtTrue = zeros(4,numel(timeVec));
+U = zeros(4,numel(timeVec));
 z = zeros(numel(timeVec),1);
 
 xTrue(:,1) = xTrue0;
@@ -32,10 +35,11 @@ for i = 1:numel(timeVec)
         xTruePrev = xTrue(:,i-1);
     end
     
-    xObsTrue(:,i) = constantVelObsModel(prevXObsTrue,dt);
+%     xObsTrue(:,i) = constantVelObsModel(prevXObsTrue,dt);
+    [xObsTrue(:,i), U(:,i)] = maneuveringObsModel(prevXObsTrue,dt, timeVec(i),legTime,legHeading,legVel);
     
     x_draw = Sw*randn(2,1);
-    xTrue(:,i) = F*xTruePrev + Gamma*x_draw;
+    xTrue(:,i) = F*xTruePrev + Gamma*x_draw - U(:,i);
     
     xTgtTrue(:,i) = xTrue(:,i) + xObsTrue(:,i);
     
@@ -46,4 +50,5 @@ outStruct.xTrue = xTrue;
 outStruct.xTgtTrue = xTgtTrue;
 outStruct.xObsTrue = xObsTrue;
 outStruct.timeVec = timeVec;
+outStruct.U = U;
 end

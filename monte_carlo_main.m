@@ -20,7 +20,9 @@ Nsim = 100;
 
 % favorable geometry
 obsPos0 = [-300; 10]; 
-obsVel0 = [20; 1];
+obsHdg0 = 10;
+obsVelMag0 = 15;
+obsVel0 = [cosd(obsHdg0)*obsVelMag0; sind(obsHdg0)*obsVelMag0];
 
 % unfavorable geometry
 % obsPos0 = [-10; 10]; 
@@ -36,6 +38,12 @@ xObs0 = [obsPos0; obsVel0];
 xTrue0 = xTgt0 - xObs0;
 
 maxTime = 100;
+obsLegTime = [0,25, 50, 75];
+obsLegHeading = [obsHdg0,  165, 15, 165];
+obsLegVel = [obsVelMag0, 15, 15, 15];
+
+             
+
 Gamma = [dt^2/2, 0;
          0,  dt^2/2;
          dt, 0
@@ -75,6 +83,10 @@ truthModelInputStruct.xTrue0 = xTrue0;
 truthModelInputStruct.xTgt0 = xTgt0;
 truthModelInputStruct.xObs0 = xObs0;
 truthModelInputStruct.timeVec = timeVec;
+truthModelInputStruct.obsLegTime = obsLegTime;
+truthModelInputStruct.obsLegHeading = obsLegHeading;
+truthModelInputStruct.obsLegVel = obsLegVel;
+
 
 
 constantVelPFinputStruct.R = R;
@@ -100,6 +112,7 @@ for mc = 1:Nsim
     
 %     plotTruthTrajectory(truthStruct{mc}, mc);
     constantVelPFinputStruct.z = truthStruct{mc}.z;
+    constantVelPFinputStruct.U = truthStruct{mc}.U;
     constantVelPFinputStruct.xObsTrue = truthStruct{mc}.xObsTrue;
 
     constantVelPFoutputStruct{mc} = constantVelPF(constantVelPFinputStruct);

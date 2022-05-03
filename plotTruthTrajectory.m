@@ -13,7 +13,7 @@ xlabel('East (m)'); ylabel('North (m)');
 else % plot all on one plot
         figure(); hold on;
     for i = 1:numel(truthStruct)
-        xTgtTrue = truthStruct{i}.xTgtTrue;
+    xTgtTrue = truthStruct{i}.xTgtTrue;
     xObsTrue = truthStruct{i}.xObsTrue;
     plot(xTgtTrue(1,:), xTgtTrue(2,:),'r');
     plot(xObsTrue(1,:), xObsTrue(2,:),'b');

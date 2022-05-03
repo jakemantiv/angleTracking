@@ -37,7 +37,7 @@ legend('Target Trajectory - Truth','Target Trajectory - MMSE Estimate', 'Observe
 title('Engagement Ground Track');
 xlabel('East (m)'); ylabel('North (m)'); 
 axis equal;
-ylim([0,500])
+% ylim([0,500])
 
 
 figure(); subplot(4,1,1); hold on;
