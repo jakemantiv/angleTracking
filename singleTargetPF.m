@@ -1,6 +1,7 @@
-function [constantVelPFoutputStruct] = constantVelPF(constantVelPFinputStruct)
+function [constantVelPFoutputStruct] = singleTargetPF(constantVelPFinputStruct,target_mode)
 xhat0 = constantVelPFinputStruct.xhat0;
 xObsTrue = constantVelPFinputStruct.xObsTrue;
+xObs0 = constantVelPFinputStruct.xObs0;
 z = constantVelPFinputStruct.z;
 timeVec = constantVelPFinputStruct.timeVec;
 xhat_MMSE = zeros(4,numel(timeVec));
@@ -24,10 +25,12 @@ for i_z = 1:numel(z)
     
     if i_z == 1
         xsamps_current = xsamp0;
+        prevXObsTrue = xObs0;
     else
         xsamps_current = xsamps(:,:,i_z-1);
+        prevXObsTrue = xObsTrue(:,i_z-1);
     end
-    [xsamps_post(:,:,i_z),w(:,i_z)] = SIRPF(xsamps_current, z(i_z), constantVelPFinputStruct, i_z);
+    [xsamps_post(:,:,i_z),w(:,i_z)] = SIRPF(xsamps_current, z(i_z), constantVelPFinputStruct, i_z, target_mode,prevXObsTrue, xObsTrue);
     [xsamps(:,:,i_z), ~, ~] = RESAMPLE(xsamps_post(:,:,i_z), w(:,i_z), constantVelPFinputStruct);
 %     [xsamps(:,:,i_z), ~] = FAST_RESAMPLE(xsamps_post(:,:,i_z), w(:,i_z), constantVelPFinputStruct);
 %     [uv, IA, IC] = unique(xsamps_post(:,:,i)','rows');
@@ -50,8 +53,8 @@ constantVelPFoutputStruct.xsamps_post = xsamps_post;
 constantVelPFoutputStruct.xsamps = xsamps;
 constantVelPFoutputStruct.w = w;
 
-function [xsamps_k,w] = SIRPF(xsamps_prev,zk, inputStruct, I_in)
-F = inputStruct.F;
+function [xsamps_k,w] = SIRPF(xsamps_prev,zk, inputStruct, I_in, target_mode,prevXObsTrue, xObsTrue)
+F_t = inputStruct.F_t;
 % G = inputStruct.G;
 U = inputStruct.U;
 Q = inputStruct.Q;
@@ -60,8 +63,11 @@ Sw = chol(Q, 'lower');
 
 w = zeros(1,size(xsamps_prev,2));
 w_draw = Sw*randn(2,numel(w));
-xsamps_k = F*xsamps_prev + Gamma*w_draw - U(:,I_in);
-
+if strcmpi(target_mode, 'straight')
+    xsamps_k = F_t(:,:,I_in)*xsamps_prev + Gamma*w_draw - U(:,I_in);
+elseif strcmpi(target_mode, 'clockwise') || strcmpi(target_mode,'counterclockwise')
+    xsamps_k = F_t(:,:,I_in)*(xsamps_prev+prevXObsTrue) - xObsTrue(:,I_in) + Gamma*w_draw;
+end
 w = get_pygivenx(zk, xsamps_k, inputStruct);
 w = w./sum(w);
 

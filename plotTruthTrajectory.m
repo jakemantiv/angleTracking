@@ -1,7 +1,7 @@
 function [] = plotTruthTrajectory(truthStruct,ithMC)
 if numel(truthStruct) == 1 % plot one trajectory at a time
-xTgtTrue = truthStruct.xTgtTrue;
-xObsTrue = truthStruct.xObsTrue;
+xTgtTrue = truthStruct{1}.xTgtTrue;
+xObsTrue = truthStruct{1}.xObsTrue;
 figure(); hold on;
 plot(xTgtTrue(1,:), xTgtTrue(2,:),'r');
 plot(xObsTrue(1,:), xObsTrue(2,:),'b');

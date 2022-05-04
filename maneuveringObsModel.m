@@ -1,6 +1,6 @@
 function [obsStateNext, U] = maneuveringObsModel(obsStatePrev,dt, t, legTime, legHeading, legVel)
 
-    R_turn = 50;
+    R_turn = 150;
     
     notFoundLeg = true;
     legIdx = 0;
