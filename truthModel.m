@@ -45,14 +45,14 @@ for i = 1:numel(timeVec)
         F_t(:,:,i) = F;
         xTrue(:,i) = F_t(:,:,i)*xTruePrev + Gamma*x_draw - U(:,i);
     elseif strcmpi(target_mode, 'clockwise')
-        omega = am/sqrt((xTruePrev(3) +prevXObsTrue(3))^2 + (xTruePrev(4) +prevXObsTrue(4))^2);
+        omega = -am/sqrt((xTruePrev(3) +prevXObsTrue(3))^2 + (xTruePrev(4) +prevXObsTrue(4))^2);
         F_t(:,:,i) = [1, 0, sin(omega*dt)/omega, -(1-cos(omega*dt))/omega;
                0, 1, (1-cos(omega*dt))/omega, sin(omega*dt)/omega;
                0, 0, cos(omega*dt), -sin(omega*dt);
                0, 0, sin(omega*dt), cos(omega*dt)];
         xTrue(:,i) = F_t(:,:,i)*(xTruePrev+prevXObsTrue) - xObsTrue(:,i) + Gamma*x_draw;
     elseif strcmpi(target_mode, 'counterclockwise')
-        omega = -am/sqrt((xTruePrev(3) +prevXObsTrue(3))^2 + (xTruePrev(4) +prevXObsTrue(4))^2);
+        omega = am/sqrt((xTruePrev(3) +prevXObsTrue(3))^2 + (xTruePrev(4) +prevXObsTrue(4))^2);
         F_t(:,:,i) = [1, 0, sin(omega*dt)/omega, -(1-cos(omega*dt))/omega;
                0, 1, (1-cos(omega*dt))/omega, sin(omega*dt)/omega;
                0, 0, cos(omega*dt), -sin(omega*dt);

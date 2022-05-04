@@ -20,7 +20,7 @@ else % plot all on one plot
     end
     axis equal;
     legend('Target Trajectory - Truth', 'Observer Trajectory - Truth', 'location', 'best');
-    title(['Engagement Ground Track - ', numel(truthStruct), ' MCs']);
+    title(['Engagement Ground Track - ', num2str(numel(truthStruct)), ' MCs']);
     xlabel('East (m)'); ylabel('North (m)');
 end 
 end

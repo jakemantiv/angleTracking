@@ -13,27 +13,27 @@ rng(12)
 % where to save the data? 
 dataFileName = 'mcTestData';
 
-posErrThreshold = 75;
-timeDivergedThreshold = 10;
+posErrThreshold = 150;
+timeDivergedThreshold = 15;
 
 % Simulation Testing
 Tsim = 120;
 dt = 0.5;
-Nsim = 10;
+Nsim = 100;
 
 % favorable geometry
 obsPos0 = [-200; 0]; 
 obsHdg0 = 20;
 obsVelMag0 = 20; % favorable geometry
 
-obsVelMag0 = 0; % unfavorable geometry
+% obsVelMag0 = 0; % unfavorable geometry
  
 obsVel0 = [cosd(obsHdg0)*obsVelMag0; sind(obsHdg0)*obsVelMag0];
 
 
 
 tgtPos0 = [0; 100];
-tgtVel0 = [0; 10];
+tgtVel0 = [0; 15];
 
 xTgt0 = [tgtPos0; tgtVel0];
 xObs0 = [obsPos0; obsVel0];
@@ -55,17 +55,17 @@ F = [1, 0, dt, 0;
      0, 1, 0, dt;
      0, 0, 1, 0; 
      0, 0, 0, 1];
-P0 = [10, 0, 0, 0; 
-      0, 10, 0, 0;
-      0, 0, 1, 0;
-      0, 0, 0, 1];
+P0 = [50, 0, 0, 0; 
+      0, 50, 0, 0;
+      0, 0, 2.5, 0;
+      0, 0, 0, 2.5];
  
 timeVec = dt:dt:maxTime;
 N = numel(timeVec);
 
 qW = .01;
 Q = qW.*eye(2);
-Q_PF = 0.011.*eye(2);
+Q_PF = 0.010.*eye(2);
 R = deg2rad(1);
 
 xTrue = zeros(4,numel(timeVec));
@@ -96,7 +96,7 @@ truthModelInputStruct.timeVec = timeVec;
 truthModelInputStruct.obsLegTime = obsLegTime;
 truthModelInputStruct.obsLegHeading = obsLegHeading;
 truthModelInputStruct.obsLegVel = obsLegVel;
-truthModelInputStruct.am = 0.15; % lateral accel capability of target;
+truthModelInputStruct.am = 0.2; % lateral accel capability of target;
 truthModelInputStruct.P0 = P0;
 
 constantVelPFinputStruct.R = R;
@@ -110,7 +110,7 @@ constantVelPFinputStruct.Ns = 1000;
 constantVelPFinputStruct.P0 = 2.*P0;
                           
 constantVelPFinputStruct.xhat0 = xTrue0; % TODO: vary the initial state
-target_mode = 'straight'; % 'straight', 'clockwise', 'counterclockwise';
+target_mode = 'clockwise'; % 'straight', 'clockwise', 'counterclockwise';
 for mc = 1:Nsim
     % Initial condition
 %     delX0 = randn(n,1).*X_var;
@@ -151,7 +151,7 @@ end
 [divergent_idx] = calcDivergentTracks(truthStruct, constantVelPFoutputStruct, posErrThreshold, timeDivergedThreshold)
 all_idx = (1:Nsim);
 non_divergent_idx = all_idx(~ismember(all_idx,divergent_idx));
-
+disp(['Num divergent tracks:', num2str(numel(divergent_idx))]); 
     
 RMS = calcRMS(non_divergent_idx, truthStruct, constantVelPFoutputStruct);
 % calcCRLBRMS
