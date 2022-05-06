@@ -10,6 +10,8 @@ w = constantVelPFoutputStruct.w;
 xsamps_post = constantVelPFoutputStruct.xsamps_post;
 xhat_MMSE = constantVelPFoutputStruct.xhat_MMSE;
 P = constantVelPFoutputStruct.P;
+effSamples = constantVelPFoutputStruct.effSamples;
+Ns = numel(w(:,1));
 r_line = 60;
 z_line1 = zeros(2,numel(z));
 z_line2 = zeros(2,numel(z));
@@ -72,4 +74,13 @@ ylabel('E Velocity (m/s)');
 legend('MMSE Estimate Error', 'Estimate Covariance 2\sigma');
 xlabel('Time (s)');
 sgtitle('Particle Filter Error');
+
+figure(); hold on;
+plot(timeVec, effSamples); 
+plot(timeVec, ones(size(timeVec)).*Ns);
+legend('Effective Sample Size', 'Number Of Samples'); 
+title('Effective Sample Size Vs. Time');
+xlabel('Time (s)');
+
+
 end

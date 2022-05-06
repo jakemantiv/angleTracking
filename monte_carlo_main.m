@@ -17,9 +17,9 @@ Nsim = 100;
 % favorable geometry
 obsPos0 = [-200; 0]; 
 obsHdg0 = 20;
-% obsVelMag0 = 20; % favorable geometry
+obsVelMag0 = 20; % favorable geometry
 
-obsVelMag0 = 1; % unfavorable geometry
+% obsVelMag0 = 1; % unfavorable geometry
  
 obsVel0 = [cosd(obsHdg0)*obsVelMag0; sind(obsHdg0)*obsVelMag0];
 
@@ -59,7 +59,7 @@ N = numel(timeVec);
 
 qW = .01;
 Q = qW.*eye(2);
-Q_PF = 0.01.*eye(2);
+Q_PF = 0.011.*eye(2);
 R = deg2rad(1);
 am = 0.2;
 
@@ -106,7 +106,7 @@ constantVelPFinputStruct.am = am;
 constantVelPFinputStruct.P0 = 2.*P0;
                           
 constantVelPFinputStruct.xhat0 = xTrue0; 
-target_mode = 'clockwise'; % 'straight', 'clockwise', 'counterclockwise';
+target_mode = 'straight'; % 'straight', 'clockwise', 'counterclockwise';
 for mc = 1:Nsim
     
     % Truth model Simulation
